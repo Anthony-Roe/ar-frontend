@@ -1,29 +1,42 @@
 'use client';
 
-import { Container, SimpleGrid, Title } from '@mantine/core';
+import { Container, SimpleGrid, Title, TextInput, Group, ActionIcon } from '@mantine/core';
+import { IconSearch } from '@tabler/icons-react';
 import MachinesAdminCard from './components/MachinesAdminCard';
 import WorkOrdersAdminCard from './components/WorkOrdersAdminCard';
 import PMPlansAdminCard from './components/PMPlansAdminCard';
 import StockManagementAdminCard from './components/StockManagementAdminCard';
 import AuditsAdminCard from './components/AuditsAdminCard';
 import PerformanceReportsAdminCard from './components/PerformanceReportsAdminCard';
-import UsersRolesCard from './components/UsersRolesCard';
-import PlantsCard from './components/PlantsCard';
-import VendorsCard from './components/VendorsCard';
+import UsersRolesAdminCard from './components/UsersRolesAdminCard';
+import PlantsAdminCard from './components/PlantsAdminCard';
+import VendorsAdminCard from './components/VendorsAdminCard';
+import { useState } from 'react';
 
 export default function AdminDashboardPage() {
+  const [globalSearch, setGlobalSearch] = useState('');
+
   return (
-    <Container size="lg" py="xl">
-      <Title align="center" mb="lg">
-        Admin Dashboard
-      </Title>
-      <SimpleGrid cols={3} spacing="lg">
-        <MachinesAdminCard />
-        <WorkOrdersAdminCard />
+    <Container size="xl" py="xl">
+      <Group justify="space-between" mb="lg">
+        <Title order={1}>Admin Dashboard</Title>
+        <TextInput
+          placeholder="Search across all sections..."
+          value={globalSearch}
+          onChange={e => setGlobalSearch(e.target.value)}
+          rightSection={<IconSearch size={16} />}
+        />
+      </Group>
+      <SimpleGrid cols={{ base: 1, sm: 2, lg: 3 }} spacing="lg">
+        <MachinesAdminCard globalSearch={globalSearch} />
+        <WorkOrdersAdminCard globalSearch={globalSearch} />
+        <PMPlansAdminCard globalSearch={globalSearch} />
+        <StockManagementAdminCard />
+        <AuditsAdminCard />
         <PerformanceReportsAdminCard />
-        <UsersRolesCard />
-        <PlantsCard />
-        <VendorsCard />
+        <UsersRolesAdminCard globalSearch={globalSearch} />
+        <PlantsAdminCard globalSearch={globalSearch} />
+        <VendorsAdminCard globalSearch={globalSearch} />
       </SimpleGrid>
     </Container>
   );

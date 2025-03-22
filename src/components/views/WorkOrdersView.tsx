@@ -70,6 +70,7 @@ export default function WorkOrdersView({
       <WorkOrderStats workOrders={workOrders} />
       <Grid>
         <Grid.Col span={4}>
+          <WorkOrderChart chartData={chartData} />
         </Grid.Col>
         <Grid.Col span={8}>
           <WorkOrderList

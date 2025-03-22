@@ -1,25 +1,42 @@
 'use client';
 
-import { useEffect, useState } from 'react';
-import { Button, Container, Title, Group, Alert } from '@mantine/core';
+import { useState, useEffect } from 'react';
+import { Container, Title, Button, Group, Alert } from '@mantine/core';
 import { useRouter } from 'next/navigation';
 import Login from '../../components/Login/Login';
 
 export default function LoginPage() {
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [isLoggedIn, setIsLoggedIn] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
   const router = useRouter();
 
+  // Check login status on component mount
   useEffect(() => {
-    // Check if the user is logged in by verifying the token in sessionStorage
     const token = sessionStorage.getItem('token');
-    setIsLoggedIn(!!token);
+    if (token) {
+      setIsLoggedIn(true);
+    }
   }, []);
 
-  const handleLogout = () => {
-    sessionStorage.removeItem('token'); // Clear the token
-    setIsLoggedIn(false); // Update the state
-    setError(null); // Clear any error messages
+  const handleLogout = async () => {
+    try {
+      const res = await fetch('http://localhost:5000/api/auth/logout', {
+        method: 'POST',
+        credentials: 'include',
+      });
+
+      if (!res.ok) {
+        throw new Error('Logout failed');
+      }
+
+      // Clear session storage and state
+      sessionStorage.removeItem('token');
+      sessionStorage.removeItem('user');
+      setIsLoggedIn(false);
+      router.push('/login');
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'An error occurred during logout');
+    }
   };
 
   return (
@@ -36,7 +53,7 @@ export default function LoginPage() {
 
       {isLoggedIn ? (
         // Show Logout Button if Logged In
-        <Group position="center">
+        <Group justify="center">
           <Button
             variant="outline"
             color="red"
@@ -46,18 +63,8 @@ export default function LoginPage() {
           </Button>
         </Group>
       ) : (
-        // Show Login and Create Account Buttons if Logged Out
-        <>
-          <Login />
-          <Group position="center" mt="md">
-            <Button
-              variant="outline"
-              onClick={() => router.push('/create-account')}
-            >
-              Create Account
-            </Button>
-          </Group>
-        </>
+        // Show Login Component if Logged Out
+        <Login />
       )}
     </Container>
   );

@@ -29,7 +29,7 @@ export default function Main() {
   const renderView = () => {
     if (loading) {
       return (
-        <Group position="center" mt="xl">
+        <Group align="center" justify="center" mt="xl">
           <Loader size="lg" />
         </Group>
       );
